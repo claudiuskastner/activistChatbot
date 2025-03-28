@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "activistChatbot"
+dynamic = ["version"]
+description = "A notification signal chatbot which reminds you on upcoming events."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "GPL" }
+dependencies = [
+    "aiocron>=2.1",
+    "beautifulsoup4>=4.13.3",
+    "dateparser>=1.2.1",
+    "django-environ>=0.12.0",
+    "loguru>=0.7.3",
+    "requests>=2.32.3",
+    "signalbot>=0.13.0",
+    "sqlmodel>=0.0.24",
+]
+
+[project.scripts]
+activistChatbot = "activist_chatbot.main:main"
+scrapeEvents = "tasks.__main__:main"
+scheduleNotification = "schedules.__main__:main"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=8.3.5",
+    "ruff>=0.9.10",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle (error)
+    "F",   # pyflakes
+    "B",   # bugbear
+    "B9",
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "I",   # isort
+    "UP",  # pyupgrade
+    "PIE", # flake8-pie
+    "PGH", # pygrep-hooks
+    "PYI", # flake8-pyi
+    "RUF",
+]

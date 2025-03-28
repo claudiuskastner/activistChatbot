@@ -1,0 +1,15 @@
+FROM python:3.13-slim
+
+RUN apt-get update && apt-get upgrade -y && apt-get install locales -y
+RUN locale-gen de_DE
+RUN locale-gen de_DE.UTF-8
+RUN update-locale
+ENV LANG="de_DE.UTF-8"
+WORKDIR /app
+COPY container/run.sh /app/
+COPY pyproject.toml pyproject.toml
+COPY src /app/src
+RUN pip install uv
+RUN uv sync
+
+CMD [ "/app/run.sh" ]

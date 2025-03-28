@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+      - 'main'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: docker
+    container:
+      env:
+        DOCKER_HOST: dind:2375
+      image: node:20-alpine
+    services:
+      docker:
+        image: docker:dind
+        options: >-
+          --privileged
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: https://code.forgejo.org/docker/setup-buildx-action@v3
+      - name: Cache container image layers
+        uses: https://code.forgejo.org/actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Build and push container image
+        uses: https://code.forgejo.org/docker/build-push-action@v6
+        with:
+          tags: registry.datacenter.house/activistchatbot:${{ github.sha }}, registry.datacenter.house/activistchatbot:latest
+          push: true
+          context: .
+          file: ./container/Containerfile

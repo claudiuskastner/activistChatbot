@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "module": "events",
+      "name": "Python: Scrape",
+      "request": "launch",
+      "type": "debugpy"
+    },
+    {
+      "justMyCode": false,
+      "module": "activist_chatbot",
+      "name": "Python: Chatbot",
+      "request": "launch",
+      "type": "debugpy"
+    },
+    {
+      "module": "schedules",
+      "name": "Python: Notifications",
+      "request": "launch",
+      "type": "debugpy"
+    }
+  ],
+  "version": "0.2.0"
+}
