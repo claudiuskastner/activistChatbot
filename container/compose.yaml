@@ -1,8 +1,12 @@
 name: activistChatbot
 
 services:
-  redis:
-    image: redis:7.4
+  chatbot:
+    image: registry.datacenter.house/activistchatbot:latest
+    volumes:
+      - chatbot_data:/app/database:Z
+    env_file: .env
     restart: always
-    ports:
-      - 6379:6379
+
+volumes:
+  chatbot_data:
