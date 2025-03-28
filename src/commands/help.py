@@ -33,7 +33,7 @@ class HelpCommand(Command):
             await context.react("🦮")
             help_text = "Hier sind alle Befehle die ich aktuell kann:\n\n"
             for com in COMMANDS:
-                help_text += com.describe() + "\n"
+                help_text += com.describe() + "\n\n"
             await context.send(help_text, text_mode="styled")
 
             return
