@@ -1,15 +1,16 @@
 FROM python:3.13-slim
 
-RUN apt-get update && apt-get upgrade -y && apt-get install locales -y
-RUN locale-gen de_DE
-RUN locale-gen de_DE.UTF-8
-RUN update-locale
-ENV LANG="de_DE.UTF-8"
-WORKDIR /app
-COPY container/run.sh /app/
-COPY pyproject.toml pyproject.toml
-COPY src /app/src
-RUN pip install uv
-RUN uv sync
+RUN groupadd -r activistbot && useradd --no-log-init -r -g activistbot activistbot
+RUN mkdir -p /app && chown -R activistbot:activistbot /app
 
-CMD [ "/app/run.sh" ]
+WORKDIR /app
+COPY container/run.sh /app/container/run.sh
+COPY pyproject.toml /app/pyproject.toml
+COPY src /app/src
+
+RUN pip install --no-cache-dir uv~=0.4.2
+RUN uv --no-cache sync
+
+USER activistbot
+
+CMD [ "/app/container/run.sh" ]
