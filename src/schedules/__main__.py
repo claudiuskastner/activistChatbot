@@ -57,6 +57,7 @@ async def schedule():
         SCRAPE_CRON_SCHEDULE,
         func=fetch_all,
         start=True,
+        tz=dateutil.tz.gettz("Europe/Berlin"),
     )
 
     while True:
