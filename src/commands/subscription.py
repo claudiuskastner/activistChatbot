@@ -20,6 +20,7 @@ import re
 from signalbot import Command
 from signalbot.context import Context
 
+from contacts.allowed_contacts import allowed
 from contacts.subscriptions import remove_subscription, upsert_subscription
 
 
@@ -69,6 +70,8 @@ class RegisterCommand(Command):
         return "**.abo <Tage> <Uhrzeit>** - Registriert dich für regelmäßige Benachrichtigungen.\n\t**.abo 5 16:32**: Du bekommst alle 5 Tage um 16:32 Uhr ein Update.\n**.abo stop**: Du bekommst keine Erinnerungen mehr."  # noqa: E501
 
     async def handle(self, context: Context):
+        if not allowed(context.message.source):
+            return
         command = context.message.text
         if command == ".abo stop":
             source = context.message.source

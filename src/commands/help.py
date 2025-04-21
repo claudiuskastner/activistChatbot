@@ -18,6 +18,8 @@
 from signalbot import Command
 from signalbot.context import Context
 
+from contacts.allowed_contacts import allowed
+
 from .ping import PingCommand
 from .reminder import ReminderCommand
 from .subscription import RegisterCommand
@@ -28,6 +30,8 @@ class HelpCommand(Command):
         return "**.help**: Zeigt diese Nachricht\n**.hilfe**: Zeigt diese Nachricht"
 
     async def handle(self, context: Context):
+        if not allowed(context.message.source):
+            return
         command = context.message.text
         if command == ".help" or command == ".hilfe":
             await context.react("🦮")

@@ -30,4 +30,8 @@ class Contact(SQLModel, table=True):
     remind_before: bool
 
 
+class AllowedContact(SQLModel, table=True):
+    source: str = Field(primary_key=True)
+
+
 SQLModel.metadata.create_all(engine)

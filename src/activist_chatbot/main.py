@@ -40,7 +40,7 @@ def main() -> None:
     logger.level(LOG_LEVEL)
     try:
         for bot_command in COMMANDS:
-            bot.register(bot_command(), contacts=allowed_contacts, groups=allowed_groups)
+            bot.register(bot_command())
 
         bot.start()
 

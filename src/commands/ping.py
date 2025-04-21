@@ -17,12 +17,16 @@
 
 from signalbot import Command, Context
 
+from contacts.allowed_contacts import allowed
+
 
 class PingCommand(Command):
     def describe() -> str:
         return "**ping**: Das ist ein Test ob das Bot responsive ist."
 
     async def handle(self, context: Context):
+        if not allowed(context.message.source):
+            return
         command = context.message.text
 
         if command == "ping":

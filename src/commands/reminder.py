@@ -23,6 +23,7 @@ from signalbot.context import Context
 from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
+from contacts.allowed_contacts import allowed
 from events.models import Event
 
 
@@ -31,6 +32,8 @@ class ReminderCommand(Command):
         return "**.event** - Listet alle gespeicherten, zukünftigen Veranstaltungen auf."
 
     async def handle(self, context: Context):
+        if not allowed(context.message.source):
+            return
         command = context.message.text
         if command == ".event":
             await context.react("📆")
