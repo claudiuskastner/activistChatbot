@@ -29,7 +29,7 @@ def get_user_subscriptions() -> list[dict]:
     subscriptions: list[dict] = []
     with Session(engine) as session:
         statement = select(Contact)
-        results = session.exec(statement)
+        results = session.exec(statement).all()
         for result in results:
             subscriptions.append(json.loads(result.model_dump_json()))
     return subscriptions

@@ -48,7 +48,7 @@ def scrape_website() -> list[dict]:
         card_link = card.find("a")
         card_date = card.find("div", class_="termin-zeiten")
         event_date = dateparser.parse(
-            card_date.next.get("datetime"), region="DE", settings={"TIMEZONE": "Europe/Berlin"}
+            card_date.next.get("datetime"), region="de", settings={"TIMEZONE": "Europe/Berlin"}
         )
         try:
             card_location = card.find("div", class_="termin-ort").get_text(strip=True).replace("Ort:", "")

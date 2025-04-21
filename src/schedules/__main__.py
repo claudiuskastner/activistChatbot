@@ -37,7 +37,7 @@ bot = SignalBot(SIGNAL_SETTINGS)
 async def send_reminder(phone_number):
     with Session(engine) as session:
         statement = select(Event).where(Event.date >= datetime.now())
-        results = session.exec(statement)
+        results = session.exec(statement).all()
         if not results:
             await bot.send(receiver=phone_number, text="Aktuell ist nichts geplant 😴", text_mode="styled")
 
@@ -58,7 +58,6 @@ async def schedule():
         SCRAPE_CRON_SCHEDULE,
         func=fetch_all,
         start=True,
-        tz=dateutil.tz.gettz("Europe/Berlin"),
     )
 
     logger.info("Setting up schedules")
