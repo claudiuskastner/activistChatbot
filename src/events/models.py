@@ -28,7 +28,7 @@ class Event(SQLModel, table=True):
     title: str = Field(primary_key=True)
     link: str
     location: str | None
-    date: datetime | None = Field(primary_key=True)
+    date: datetime = Field(primary_key=True)
     time: str | None
 
 

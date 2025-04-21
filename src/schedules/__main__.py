@@ -73,7 +73,7 @@ async def schedule():
                         func=send_reminder,
                         args=(phone_number,),
                         start=True,
-                        tz="CET",
+                        tz="Europe/Berlin",
                     )
                 )
         await asyncio.sleep(1)

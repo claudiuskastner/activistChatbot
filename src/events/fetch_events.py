@@ -48,8 +48,9 @@ def scrape_website() -> list[dict]:
     for card in cards:
         card_link = card.find("a")
         card_date = card.find("div", class_="termin-zeiten")
-        event_date = dateparser.parse(card_date.next.get("datetime"), region="DE")
-        event_date.replace(tzinfo=datetime.timezone.cet)
+        event_date = dateparser.parse(
+            card_date.next.get("datetime"), region="DE", settings={"TIMEZONE": "Europe/Berlin"}
+        )
         try:
             card_location = card.find("div", class_="termin-ort").get_text(strip=True).replace("Ort:", "")
         except AttributeError:
@@ -78,12 +79,12 @@ def write_events(events: list[dict]):
             result = session.exec(statement).first()
             if not result:
                 result = Event()
-                result.title = (event.get("title", ""),)
-                result.date = (event.get("date"),)
+                result.title = event.get("title", "")
+                result.date = event.get("date")
 
-            result.location = (event.get("location"),)
-            result.link = (event.get("link", ""),)
-            result.time = (event.get("time"),)
+            result.location = event.get("location")
+            result.link = event.get("link", "")
+            result.time = event.get("time")
             session.add(result)
 
             with contextlib.suppress(sqlalchemy.exc.IntegrityError):
