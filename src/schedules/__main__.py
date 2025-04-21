@@ -38,6 +38,9 @@ async def send_reminder(phone_number):
     with Session(engine) as session:
         statement = select(Event).where(Event.date >= datetime.now())
         results = session.exec(statement)
+        if not results:
+            await bot.send(receiver=phone_number, text="Aktuell ist nichts geplant 😴", text_mode="styled")
+
         for event in results:
             ev_date = ""
             if event.date:

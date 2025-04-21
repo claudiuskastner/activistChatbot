@@ -16,7 +16,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
-from datetime import datetime
 from urllib.parse import urljoin
 
 import dateparser
