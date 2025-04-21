@@ -23,7 +23,7 @@ import dateparser
 import requests
 import sqlalchemy
 from bs4 import BeautifulSoup, Tag
-from sqlmodel import Session
+from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
 from activist_chatbot.settings import SCRAPE_URL
@@ -71,14 +71,20 @@ def scrape_website() -> list[dict]:
 
 def write_events(events: list[dict]):
     for event in events:
-        d_event = Event(
-            title=event.get("title", ""),
-            location=event.get("location"),
-            link=event.get("link", ""),
-            date=event.get("date"),
-            time=event.get("time"),
-        )
         with Session(engine) as session:
-            session.add(d_event)
+            statement = (
+                select(Event).where(Event.title == event.get("title", "")).where(Event.date == event.get("date"))
+            )
+            result = session.exec(statement).first()
+            if not result:
+                result = Event()
+                result.title = (event.get("title", ""),)
+                result.date = (event.get("date"),)
+
+            result.location = (event.get("location"),)
+            result.link = (event.get("link", ""),)
+            result.time = (event.get("time"),)
+            session.add(result)
+
             with contextlib.suppress(sqlalchemy.exc.IntegrityError):
                 session.commit()
