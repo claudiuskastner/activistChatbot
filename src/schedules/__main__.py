@@ -19,6 +19,7 @@ import asyncio
 from datetime import datetime
 
 import aiocron
+import dateutil
 from aiocron import Cron
 from signalbot import SignalBot
 from sqlmodel import Session, select
@@ -73,7 +74,7 @@ async def schedule():
                         func=send_reminder,
                         args=(phone_number,),
                         start=True,
-                        tz="Europe/Berlin",
+                        tz=dateutil.tz.gettz("Europe/Berlin"),
                     )
                 )
         await asyncio.sleep(1)
