@@ -21,6 +21,7 @@ from datetime import datetime
 import aiocron
 import dateutil
 from aiocron import Cron
+from loguru import logger
 from signalbot import SignalBot
 from sqlmodel import Session, select
 
@@ -30,7 +31,6 @@ from contacts.subscriptions import get_user_subscriptions
 from events.fetch_events import fetch_all
 from events.models import Event
 
-# locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
 bot = SignalBot(SIGNAL_SETTINGS)
 
 
@@ -53,6 +53,7 @@ async def schedule():
     subscriptions: list[dict] = []
     jobs: list[Cron] = []
 
+    logger.info(f"Setting up scrape schedule task. Used interval: {SCRAPE_CRON_SCHEDULE}")
     aiocron.crontab(
         SCRAPE_CRON_SCHEDULE,
         func=fetch_all,
@@ -60,6 +61,7 @@ async def schedule():
         tz=dateutil.tz.gettz("Europe/Berlin"),
     )
 
+    logger.info("Setting up schedules")
     while True:
         new_subscriptions: list[dict] = get_user_subscriptions()
         if subscriptions != new_subscriptions:
