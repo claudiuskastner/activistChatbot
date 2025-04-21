@@ -36,6 +36,8 @@ class ReminderCommand(Command):
             with Session(engine) as session:
                 statement = select(Event).where(Event.date >= datetime.now())
                 results = session.exec(statement)
+                if not results:
+                    await context.send(text="Aktuell ist nichts geplant 😴", text_mode="styled")
                 for event in results:
                     new_message = f"**{event.title}:**\n{event.date.strftime(' %d. %B %Y %H:%M')} Uhr\n\n{event.location}\n\n{event.link}"  # noqa: E501
                     await context.send(new_message, text_mode="styled")
