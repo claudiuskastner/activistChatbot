@@ -23,7 +23,7 @@ from signalbot.context import Context
 from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
-from contacts.allowed_contacts import allowed
+from contacts.authorisation import allowed
 from events.models import Event
 
 

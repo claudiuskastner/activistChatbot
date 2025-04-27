@@ -20,7 +20,7 @@ import re
 from signalbot import Command
 from signalbot.context import Context
 
-from contacts.allowed_contacts import allowed
+from contacts.authorisation import allowed
 from contacts.subscriptions import remove_subscription, upsert_subscription
 
 

@@ -27,7 +27,7 @@ from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
 from activist_chatbot.settings import SCRAPE_CRON_SCHEDULE, SIGNAL_SETTINGS
-from contacts.allowed_contacts import scan_contacts
+from contacts.authorisation import scan_contacts
 from contacts.subscriptions import get_user_subscriptions
 from events.fetch_events import fetch_all
 from events.models import Event

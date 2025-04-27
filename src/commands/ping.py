@@ -17,7 +17,7 @@
 
 from signalbot import Command, Context
 
-from contacts.allowed_contacts import allowed
+from contacts.authorisation import allowed
 
 
 class PingCommand(Command):

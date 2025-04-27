@@ -18,7 +18,7 @@
 from signalbot import Command
 from signalbot.context import Context
 
-from contacts.allowed_contacts import allowed
+from contacts.authorisation import allowed
 
 from .ping import PingCommand
 from .reminder import ReminderCommand
