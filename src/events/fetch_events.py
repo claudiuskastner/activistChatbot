@@ -16,9 +16,11 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
+from datetime import datetime
 from urllib.parse import urljoin
 
 import dateparser
+import dateutil
 import requests
 import sqlalchemy
 from bs4 import BeautifulSoup, Tag
@@ -88,3 +90,15 @@ def write_events(events: list[dict]):
 
             with contextlib.suppress(sqlalchemy.exc.IntegrityError):
                 session.commit()
+
+
+def sort_by_date(e):
+    return e.date
+
+
+def get_events() -> list[Event]:
+    with Session(engine) as session:
+        statement = select(Event).where(Event.date >= datetime.now(tz=dateutil.tz.gettz("Europe/Berlin")))
+        results = session.exec(statement).all()
+        results.sort(key=sort_by_date)
+        return results

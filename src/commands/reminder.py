@@ -15,15 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-from datetime import datetime
 
-import dateutil
 from signalbot import Command
 from signalbot.context import Context
-from sqlmodel import Session, select
 
-from activist_chatbot.database_management import engine
 from contacts.authorisation import allowed
+from events.fetch_events import get_events
 from events.models import Event
 
 
@@ -37,12 +34,11 @@ class ReminderCommand(Command):
         command = context.message.text
         if command == ".event":
             await context.react("📆")
-            with Session(engine) as session:
-                statement = select(Event).where(Event.date >= datetime.now(tz=dateutil.tz.gettz("Europe/Berlin")))
-                results = session.exec(statement).all()
-                if not results:
-                    await context.send(text="Aktuell ist nichts geplant 😴", text_mode="styled")
-                for event in results:
-                    new_message = f"**{event.title}:**\n{event.date.strftime(' %d.%m.%Y %H:%M')} Uhr\n\n{event.location}\n\n{event.link}"  # noqa: E501
-                    await context.send(new_message, text_mode="styled")
-            return
+            events: list[Event] = get_events()
+            if not events:
+                await context.send(text="Aktuell ist nichts geplant 😴", text_mode="styled")
+                return
+
+            for event in events:
+                new_message = f"**{event.title}:**\n{event.date.strftime(' %d.%m.%Y %H:%M')} Uhr\n\n{event.location}\n\n{event.link}"  # noqa: E501
+                await context.send(new_message, text_mode="styled")

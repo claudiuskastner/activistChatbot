@@ -16,38 +16,35 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import asyncio
-from datetime import datetime
 
 import aiocron
 import dateutil
 from aiocron import Cron
 from loguru import logger
 from signalbot import SignalBot
-from sqlmodel import Session, select
 
-from activist_chatbot.database_management import engine
 from activist_chatbot.settings import CONTACT_SYNC_CRON_SCHEDULE, SCRAPE_CRON_SCHEDULE, SIGNAL_SETTINGS
 from contacts.authorisation import scan_contacts
 from contacts.subscriptions import get_user_subscriptions
-from events.fetch_events import fetch_all
+from events.fetch_events import fetch_all, get_events
 from events.models import Event
 
 bot = SignalBot(SIGNAL_SETTINGS)
 
 
 async def send_reminder(phone_number):
-    with Session(engine) as session:
-        statement = select(Event).where(Event.date >= datetime.now())
-        results = session.exec(statement).all()
-        if not results:
-            await bot.send(receiver=phone_number, text="Aktuell ist nichts geplant 😴", text_mode="styled")
+    events: list[Event] = get_events()
 
-        for event in results:
-            ev_date = ""
-            if event.date:
-                ev_date = f"\n{event.date.strftime('%d. %B %Y %H:%M Uhr')}"
-            new_message = f"**{event.title}:**{ev_date}\n\n{event.location}\n\n{event.link}"
-            await bot.send(receiver=phone_number, text=new_message, text_mode="styled")
+    if not events:
+        await bot.send(receiver=phone_number, text="Aktuell ist nichts geplant 😴", text_mode="styled")
+        return
+
+    for event in events:
+        ev_date = ""
+        if event.date:
+            ev_date = f"\n{event.date.strftime('%d. %B %Y %H:%M Uhr')}"
+        new_message = f"**{event.title}:**{ev_date}\n\n{event.location}\n\n{event.link}"
+        await bot.send(receiver=phone_number, text=new_message, text_mode="styled")
 
 
 async def schedule():
