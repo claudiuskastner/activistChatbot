@@ -26,7 +26,7 @@ from signalbot import SignalBot
 from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
-from activist_chatbot.settings import SCRAPE_CRON_SCHEDULE, SIGNAL_SETTINGS
+from activist_chatbot.settings import CONTACT_SYNC_CRON_SCHEDULE, SCRAPE_CRON_SCHEDULE, SIGNAL_SETTINGS
 from contacts.authorisation import scan_contacts
 from contacts.subscriptions import get_user_subscriptions
 from events.fetch_events import fetch_all
@@ -61,9 +61,9 @@ async def schedule():
         start=True,
     )
 
-    logger.info(f"Setting up contact scan task. Used interval: {SCRAPE_CRON_SCHEDULE}")
+    logger.info(f"Setting up contact scan task. Used interval: {CONTACT_SYNC_CRON_SCHEDULE}")
     aiocron.crontab(
-        "* * * * *",
+        CONTACT_SYNC_CRON_SCHEDULE,
         func=scan_contacts,
         start=True,
     )

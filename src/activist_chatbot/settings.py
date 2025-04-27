@@ -39,3 +39,6 @@ SIGNAL_SETTINGS: dict = {
 # Scrape settings
 SCRAPE_URL: str = env.str("SCRAPE_URL")  # type: ignore  # noqa: PGH003
 SCRAPE_CRON_SCHEDULE: str = env.str("SCRAPE_CRON_SCHEDULE", default="*/60 * * * *")
+
+# Contact settings
+CONTACT_SYNC_CRON_SCHEDULE: str = env.str("CONTACT_SYNC_CRON_SCHEDULE", default="* * * * *")
