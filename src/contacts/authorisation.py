@@ -3,6 +3,7 @@ import json
 
 import requests
 import sqlalchemy
+from loguru import logger
 from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
@@ -40,10 +41,11 @@ def allowed(source: str) -> bool:
         with Session(engine) as session:
             statement = select(AllowedContact).where(AllowedContact.source == source)
             result = session.exec(statement).first()
-            if result[0].source == source:
+            if result.source == source:
                 return True
         return False
     except sqlalchemy.exc.SQLAlchemyError:
         return False
-    except Exception:
+    except Exception as ex:
+        logger.info(ex)
         return False
