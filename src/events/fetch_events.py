@@ -54,13 +54,15 @@ def scrape_website() -> list[dict]:
         )
         try:
             card_location = card.find("div", class_="termin-ort").get_text(strip=True).replace("Ort:", "")
+            time = card_date.find("time", class_="termin-zeiten-uhrzeit")
+            time = time.get_text(strip=True) if time else None
         except AttributeError:
             card_location = ""
         event = {
             "title": card_link.get_text(strip=True),
             "link": urljoin(SCRAPE_URL, card_link.get("href", "")),
             "date": event_date,
-            "time": card_date.find("time", class_="termin-zeiten-uhrzeit").get_text(strip=True),
+            "time": time,
             "location": card_location,
             "description": card.find("div", class_="card-text").get_text(strip=True),
         }
