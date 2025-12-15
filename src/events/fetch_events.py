@@ -16,7 +16,6 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
-from collections.abc import Sequence
 from datetime import datetime
 from urllib.parse import urljoin
 
