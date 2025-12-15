@@ -16,6 +16,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import contextlib
+from collections.abc import Sequence
 from datetime import datetime
 from urllib.parse import urljoin
 
@@ -24,6 +25,7 @@ import dateutil
 import requests
 import sqlalchemy
 from bs4 import BeautifulSoup, Tag
+from bs4.element import ResultSet
 from sqlmodel import Session, select
 
 from activist_chatbot.database_management import engine
@@ -44,7 +46,7 @@ def scrape_website() -> list[dict]:
         print(f"Error fetching the page: {e}")
         return []
     soup = BeautifulSoup(event_page.content, "html.parser")
-    cards: list[Tag] = soup.find_all("div", class_="card")
+    cards: ResultSet = soup.find_all("div", class_="card")
     events: list[dict[str, str | None]] = []
     for card in cards:
         card_link = card.find("a")
@@ -74,6 +76,14 @@ def scrape_website() -> list[dict]:
 
 
 def write_events(events: list[dict]):
+    new_event_keys = {(event["title"], event["date"]) for event in events}
+    with Session(engine) as session:
+        db_events = session.exec(select(Event)).all()
+        to_delete = [e for e in db_events if (e.title, e.date) not in new_event_keys]
+        for event in to_delete:
+            session.delete(event)
+        if to_delete:
+            session.commit()
     for event in events:
         with Session(engine) as session:
             statement = (
@@ -81,14 +91,16 @@ def write_events(events: list[dict]):
             )
             result = session.exec(statement).first()
             if not result:
-                result = Event()
-                result.title = event.get("title", "")
-                result.date = event.get("date")
-
-            result.location = event.get("location")
-            result.link = event.get("link", "")
-            result.time = event.get("time")
-            session.add(result)
+                date_value = event.get("date")
+                if date_value is not None:
+                    result = Event(
+                        title=event.get("title", ""),
+                        link=event.get("link", ""),
+                        location=event.get("location"),
+                        date=date_value,
+                        time=event.get("time"),
+                    )
+                session.add(result)
 
             with contextlib.suppress(sqlalchemy.exc.IntegrityError):
                 session.commit()
@@ -101,6 +113,6 @@ def sort_by_date(e):
 def get_events() -> list[Event]:
     with Session(engine) as session:
         statement = select(Event).where(Event.date >= datetime.now(tz=dateutil.tz.gettz("Europe/Berlin")))
-        results = session.exec(statement).all()
+        results = list(session.exec(statement).all())
         results.sort(key=sort_by_date)
         return results
