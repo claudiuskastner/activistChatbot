@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.14-slim
 
 RUN groupadd -r activistbot && useradd --no-log-init -r -g activistbot activistbot
 RUN mkdir -p /app && chown -R activistbot:activistbot /app
