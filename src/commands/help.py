@@ -26,7 +26,7 @@ from .subscription import RegisterCommand
 
 
 class HelpCommand(Command):
-    def describe() -> str:
+    def describe(self) -> str:
         return "**.help**: Zeigt diese Nachricht\n**.hilfe**: Zeigt diese Nachricht"
 
     async def handle(self, context: Context):
@@ -44,10 +44,10 @@ class HelpCommand(Command):
 
 
 COMMANDS: list[Command] = [
-    ReminderCommand,
-    RegisterCommand,
-    PingCommand,
-    HelpCommand,
+    ReminderCommand(),
+    RegisterCommand(),
+    PingCommand(),
+    HelpCommand(),
 ]
 
 

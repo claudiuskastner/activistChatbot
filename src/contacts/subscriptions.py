@@ -14,7 +14,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
-
 import contextlib
 import json
 
@@ -50,19 +49,25 @@ def remove_subscription(phone_number: str) -> str:
             return f"Datenbankfehler: {ex!s}"
 
 
-def upsert_subscription(phone_numer: str, interval: dict[str]) -> str | None:
+def upsert_subscription(phone_number: str, interval: dict[str, str | int]) -> str | None:
     with Session(engine) as session:
         try:
-            statement = select(Contact).where(Contact.phone_number == phone_numer)
-            result = session.exec(statement).first()
+            statement = select(Contact).where(Contact.phone_number == phone_number)
+            result: Contact | None = session.exec(statement).first()
 
             if not result:
-                result = Contact()
-                result.phone_number = phone_numer
+                interval_value = int(interval["interval"])
+                result = Contact(
+                    phone_number=phone_number,
+                    notification_interval=interval_value,
+                    notification_time=str(interval["time"]),
+                    remind_before=True,
+                )
+            else:
+                result.notification_interval = int(interval["interval"])
+                result.notification_time = str(interval["time"])
+                result.remind_before = True
 
-            result.notification_interval = interval["interval"]
-            result.remind_before = True
-            result.notification_time = interval["time"]
             session.add(result)
 
             with contextlib.suppress(sqlalchemy.exc.IntegrityError):

@@ -17,7 +17,7 @@
 
 import uuid
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel  # pyright: ignore[reportUnknownVariableType]
 
 from activist_chatbot.database_management import engine
 

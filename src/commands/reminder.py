@@ -25,7 +25,7 @@ from events.models import Event
 
 
 class ReminderCommand(Command):
-    def describe() -> str:
+    def describe(self) -> str:
         return "**.event** - Listet alle gespeicherten, zukünftigen Veranstaltungen auf."
 
     async def handle(self, context: Context):

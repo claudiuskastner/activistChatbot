@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+from typing import cast
+
 import environ
 
 env = environ.Env()
@@ -30,15 +32,14 @@ SIGNAL_SERVICE: str = env.str("SIGNAL_SERVICE")  # type: ignore  # noqa: PGH003
 PHONE_NUMBER: str = env.str("PHONE_NUMBER")  # type: ignore  # noqa: PGH003
 ALLOWED_GROUPS: list[str] = env.list("ALLOWED_GROUPS", default=[])  # type: ignore  # noqa: PGH003
 ALLOWED_CONTACTS: list[str] = env.list("ALLOWED_CONTACTS", default=[])  # type: ignore  # noqa: PGH003
-SIGNAL_SETTINGS: dict = {
+SIGNAL_SETTINGS: dict[str, str | None] = {
     "signal_service": SIGNAL_SERVICE,
     "phone_number": PHONE_NUMBER,
-    "storage": None,
 }
 
 # Scrape settings
-SCRAPE_URL: str = env.str("SCRAPE_URL")  # type: ignore  # noqa: PGH003
-SCRAPE_CRON_SCHEDULE: str = env.str("SCRAPE_CRON_SCHEDULE", default="*/60 * * * *")
+SCRAPE_URL: str = cast(str, env.str("SCRAPE_URL"))
+SCRAPE_CRON_SCHEDULE: str = cast(str, env.str("SCRAPE_CRON_SCHEDULE", default="*/60 * * * *"))  # type: ignore[misc]
 
 # Contact settings
-CONTACT_SYNC_CRON_SCHEDULE: str = env.str("CONTACT_SYNC_CRON_SCHEDULE", default="* * * * *")
+CONTACT_SYNC_CRON_SCHEDULE: str = cast(str, env.str("CONTACT_SYNC_CRON_SCHEDULE", default="* * * * *"))  # type: ignore[misc]

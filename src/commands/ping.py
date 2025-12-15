@@ -21,7 +21,7 @@ from contacts.authorisation import allowed
 
 
 class PingCommand(Command):
-    def describe() -> str:
+    def describe(self) -> str:
         return "**ping**: Das ist ein Test ob das Bot responsive ist."
 
     async def handle(self, context: Context):

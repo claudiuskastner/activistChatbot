@@ -49,15 +49,16 @@ def scrape_website() -> list[dict]:
     cards: ResultSet = soup.find_all("div", class_="card")
     events: list[dict[str, str | None]] = []
     for card in cards:
-        card_link = card.find("a")
-        card_date = card.find("div", class_="termin-zeiten")
-        event_date = dateparser.parse(
+        card_link: Tag = card.find("a")
+        card_date: Tag = card.find("div", class_="termin-zeiten")
+        event_date: datetime | None = dateparser.parse(
             card_date.next.get("datetime"), region="de", settings={"TIMEZONE": "Europe/Berlin"}
         )
+        time = None
         try:
             card_location = card.find("div", class_="termin-ort").get_text(strip=True).replace("Ort:", "")
-            time = card_date.find("time", class_="termin-zeiten-uhrzeit")
-            time = time.get_text(strip=True) if time else None
+            time_elem = card_date.find("time", class_="termin-zeiten-uhrzeit")
+            time = time_elem.get_text(strip=True) if time_elem else None
         except AttributeError:
             card_location = ""
         event = {
@@ -68,7 +69,8 @@ def scrape_website() -> list[dict]:
             "location": card_location,
             "description": card.find("div", class_="card-text").get_text(strip=True),
         }
-        if len(event["title"]) < 4:
+        title = event.get("title") or ""
+        if len(title) < 4:
             break
         events.append(event)
 

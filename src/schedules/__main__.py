@@ -29,10 +29,11 @@ from contacts.subscriptions import get_user_subscriptions
 from events.fetch_events import fetch_all, get_events
 from events.models import Event
 
-bot = SignalBot(SIGNAL_SETTINGS)
+bot = None
 
 
-async def send_reminder(phone_number):
+async def send_reminder(phone_number: str):
+    assert bot is not None
     events: list[Event] = get_events()
 
     if not events:
@@ -48,6 +49,9 @@ async def send_reminder(phone_number):
 
 
 async def schedule():
+    global bot
+    bot = SignalBot(SIGNAL_SETTINGS)
+
     subscriptions: list[dict] = []
     jobs: list[Cron] = []
 

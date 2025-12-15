@@ -16,6 +16,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import sys
+import asyncio
 
 from loguru import logger
 from signalbot import SignalBot
@@ -29,21 +30,22 @@ from .settings import (
     SIGNAL_SETTINGS,
 )
 
-allowed_groups = ALLOWED_GROUPS
-allowed_contacts = ALLOWED_CONTACTS
-
-# locale.setlocale(locale.LC_TIME, "de_DE.UTF-8")
-bot = SignalBot(SIGNAL_SETTINGS)
+allowed_groups: list[str] = ALLOWED_GROUPS
+allowed_contacts: list[str] = ALLOWED_CONTACTS
 
 
-def main() -> None:
+async def main() -> None:
     logger.level(LOG_LEVEL)
     try:
+        bot = SignalBot(SIGNAL_SETTINGS)
+
         for bot_command in COMMANDS:
             bot.register(bot_command)
 
-        bot.start()
+        bot.start(run_forever=False)
 
-    except KeyboardInterrupt:
+        await asyncio.Event().wait()
+
+    except (KeyboardInterrupt, asyncio.CancelledError):
         logger.info("Exiting ...")
         sys.exit(0)

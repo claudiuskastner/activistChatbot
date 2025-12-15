@@ -27,6 +27,8 @@ from contacts.subscriptions import remove_subscription, upsert_subscription
 def parse_subscribe(command):
     parts = command.split(" ", 1)
     if len(parts) < 2:
+        if command.strip() == ".abo":
+            return {"error": "No interval provided."}
         return {"error": "Kein gültiges Intervall gefunden."}
 
     params = parts[1].lower().split()
@@ -60,13 +62,15 @@ def parse_subscribe(command):
                 return {"error": "Ungültige Zeitangabe."}
 
     if not interval:
+        if command.strip() == ".abo":
+            return {"error": "No interval provided."}
         return {"error": "Kein gültiges Intervall gefunden."}
 
     return {"interval": int(interval), "time": time}
 
 
 class RegisterCommand(Command):
-    def describe() -> str:
+    def describe(self) -> str:
         return "**.abo <Tage> <Uhrzeit>** - Registriert dich für regelmäßige Benachrichtigungen.\n\t**.abo 5 16:32**: Du bekommst alle 5 Tage um 16:32 Uhr ein Update.\n**.abo stop**: Du bekommst keine Erinnerungen mehr."  # noqa: E501
 
     async def handle(self, context: Context):
@@ -86,7 +90,7 @@ class RegisterCommand(Command):
 
             source = context.message.source
 
-            res: str = upsert_subscription(source, new_interval)
+            res: str | None = upsert_subscription(source, new_interval)
             if res:
                 await context.send(res)
                 return
