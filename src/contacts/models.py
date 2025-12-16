@@ -19,8 +19,6 @@ import uuid
 
 from sqlmodel import Field, SQLModel  # pyright: ignore[reportUnknownVariableType]
 
-from activist_chatbot.database_management import engine
-
 
 class Contact(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)

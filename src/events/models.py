@@ -20,8 +20,6 @@ from datetime import datetime
 
 from sqlmodel import Field, SQLModel
 
-from activist_chatbot.database_management import engine
-
 
 class Event(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)

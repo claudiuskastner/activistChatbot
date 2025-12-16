@@ -1,3 +1,4 @@
+from sqlalchemy.ext.baked import log
 import contextlib
 import json
 
@@ -41,7 +42,8 @@ def allowed(source: str) -> bool:
         with Session(engine) as session:
             statement = select(AllowedContact).where(AllowedContact.source == source)
             result = session.exec(statement).first()
-            if result.source == source:
+            logger.debug(f"Allowed contact check for {source}: {result}")
+            if result and result.source == source:
                 return True
         return False
     except sqlalchemy.exc.SQLAlchemyError:
