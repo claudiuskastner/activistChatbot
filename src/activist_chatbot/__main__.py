@@ -15,9 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-import asyncio
-
 from .main import main
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

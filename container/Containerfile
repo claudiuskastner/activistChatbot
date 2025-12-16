@@ -8,7 +8,7 @@ COPY container/run.sh /app/container/run.sh
 COPY pyproject.toml /app/pyproject.toml
 COPY src /app/src
 
-RUN pip install --no-cache-dir uv~=0.4.2
+RUN pip install --no-cache-dir uv~=0.8.19
 RUN uv --no-cache sync
 
 USER activistbot

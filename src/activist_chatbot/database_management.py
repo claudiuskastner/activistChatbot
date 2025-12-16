@@ -16,8 +16,13 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 
-from sqlmodel import create_engine
+from sqlmodel import SQLModel, create_engine
 
 from .settings import DATABASE_PATH
 
 engine = create_engine(DATABASE_PATH)
+
+
+def init_db() -> None:
+    """Create database tables for all SQLModel models."""
+    SQLModel.metadata.create_all(engine)

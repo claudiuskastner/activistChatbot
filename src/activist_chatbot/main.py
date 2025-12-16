@@ -34,7 +34,7 @@ allowed_groups: list[str] = ALLOWED_GROUPS
 allowed_contacts: list[str] = ALLOWED_CONTACTS
 
 
-async def main() -> None:
+async def _main() -> None:
     logger.level(LOG_LEVEL)
     try:
         bot = SignalBot(SIGNAL_SETTINGS)
@@ -46,6 +46,15 @@ async def main() -> None:
 
         await asyncio.Event().wait()
 
+    except (KeyboardInterrupt, asyncio.CancelledError):
+        logger.info("Exiting ...")
+        sys.exit(0)
+
+
+def main() -> None:
+    """Synchronous entrypoint for console-scripts."""
+    try:
+        asyncio.run(_main())
     except (KeyboardInterrupt, asyncio.CancelledError):
         logger.info("Exiting ...")
         sys.exit(0)

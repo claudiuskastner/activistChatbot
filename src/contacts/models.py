@@ -32,6 +32,3 @@ class Contact(SQLModel, table=True):
 
 class AllowedContact(SQLModel, table=True):
     source: str = Field(primary_key=True)
-
-
-SQLModel.metadata.create_all(engine)

@@ -30,6 +30,3 @@ class Event(SQLModel, table=True):
     location: str | None
     date: datetime = Field(primary_key=True)
     time: str | None
-
-
-SQLModel.metadata.create_all(engine)
